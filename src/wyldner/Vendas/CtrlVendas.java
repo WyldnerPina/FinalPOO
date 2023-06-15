@@ -35,6 +35,7 @@ public class CtrlVendas {
 	
 	private ObservableList<Vendas> listaVend = FXCollections.observableArrayList();
 	private IVendasDAO vDao;
+	
 //===================================================================================================================================
 	public CtrlVendas() throws ClassNotFoundException, SQLException {
 		vDao = new VendasDAO();
@@ -77,6 +78,8 @@ public class CtrlVendas {
 		qntProd.set(v.getQntProd());	
 	}
 	
+	//---------------------------------------------------------------------------------
+	
 	public void adicionar(Produto p, int qnt) throws SQLException { 
 		Vendas v = new Vendas(p);
 		v.setQntidade(qnt);
@@ -89,6 +92,8 @@ public class CtrlVendas {
 		vDao.adicionar(v);
 	}
 	
+	//---------------------------------------------------------------------------------
+	
 	public void pesquisar() throws SQLException {
 		if(idVendas.get() == 0) {
 			listaVend.clear();
@@ -99,10 +104,10 @@ public class CtrlVendas {
 			v = vDao.procurarCodProd(idVendas.get());
 			listaVend.clear();
 			listaVend.add(v);
-//			limpar();
 		}
 	}
 	
+	//---------------------------------------------------------------------------------	
 	
 	public void atualizar() throws SQLException {
 		if(idVendas.get() == 0) {
@@ -126,8 +131,6 @@ public class CtrlVendas {
 			pesquisar();
 		}
 	}
-	
-/* FALTA FAZER O PESQUISAR POR COD */
 	
 //===================================================================================================================================
 	public final LongProperty getIdVend() {

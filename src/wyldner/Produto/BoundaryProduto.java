@@ -33,7 +33,8 @@ public class BoundaryProduto implements IPrincipal {
 	private TableView<Produto> table = new TableView<>();
 	
 	private AnchorPane principal;
-	
+
+//===================================================================================================================================
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void ligacoes() { 
 		Bindings.bindBidirectional(txtCodProd.textProperty(), ctrlProd.getCodProd(),(StringConverter) new LongStringConverter());
@@ -42,6 +43,8 @@ public class BoundaryProduto implements IPrincipal {
 		Bindings.bindBidirectional(txtPrecoUnid.textProperty(), ctrlProd.getPreco(),(StringConverter) new DoubleStringConverter());
 		Bindings.bindBidirectional(txtQntProd.textProperty(), ctrlProd.getQntProd(),(StringConverter) new IntegerStringConverter());
 	}
+	
+	// ---------------------------------------------------------------------------------
 	
 	@SuppressWarnings("unchecked")
 	public void abastecerTableView() { 
@@ -62,16 +65,17 @@ public class BoundaryProduto implements IPrincipal {
 		
 		//------------------------------------------------------------------------------------------------------
 		
-		TableColumn<Produto, Void> colAcoes = new TableColumn<>("Ações");
+		TableColumn<Produto, Void> colAcoes = new TableColumn<>("Vender");
 		Callback<TableColumn<Produto, Void>, TableCell<Produto, Void>> callBack = new Callback<>() {
 
 			@Override
 			public TableCell<Produto, Void> call(TableColumn<Produto, Void> col) {
 				TableCell<Produto, Void> tCell = new TableCell<>() {
-
-					final Button btnExcluir = new Button("Vender");
+					
+					//------------------------------------------------------------------------------------------------------
+					final Button btnVender = new Button("Vender");
 					{
-						btnExcluir.setOnAction(e -> {
+						btnVender.setOnAction(e -> {
 							Produto p = table.getItems().get(getIndex());
 							try {
 								ctrlProd.vender(p);
@@ -82,6 +86,42 @@ public class BoundaryProduto implements IPrincipal {
 						});
 					}
 
+					@Override
+					public void updateItem(Void item, boolean empty) {
+						super.updateItem(item, empty);
+						if (empty) {
+							setGraphic(null);
+						} else {
+							setGraphic(btnVender);
+						}
+					}
+				};
+				return tCell;
+			}
+		};
+		
+		//------------------------------------------------------------------------------------------------------
+		
+		TableColumn<Produto, Void> colAcoes2 = new TableColumn<>("Excluir");
+		Callback<TableColumn<Produto, Void>, TableCell<Produto, Void>> callBack2 = new Callback<>() {
+
+				@Override
+				public TableCell<Produto, Void> call(TableColumn<Produto, Void> col) {
+				TableCell<Produto, Void> tCell = new TableCell<>() {
+			
+					//------------------------------------------------------------------------------------------------------
+					final Button btnExcluir = new Button("Excluir");
+					{
+						btnExcluir.setOnAction(e -> {
+							Produto p = table.getItems().get(getIndex());
+							try {
+								ctrlProd.excluir(p);
+							} catch (SQLException | ClassNotFoundException e1) {
+								Alert a = new Alert(AlertType.ERROR,"Erro ao excluir, contate o Administrador", ButtonType.OK);
+								a.showAndWait();
+							}
+						});
+					}
 					
 					@Override
 					public void updateItem(Void item, boolean empty) {
@@ -96,19 +136,22 @@ public class BoundaryProduto implements IPrincipal {
 				return tCell;
 			}
 		};
-		
+				
 		colAcoes.setCellFactory(callBack);
+		colAcoes2.setCellFactory(callBack2);
 		
-		double sexto = 960.0 / 6.0;
-		colCodProd.setPrefWidth(sexto);
-		colNomeProd.setPrefWidth(sexto);
-		colDescProd.setPrefWidth(sexto);
-		colPrecoUnit.setPrefWidth(sexto);
-		colQntProd.setPrefWidth(sexto);
-		colAcoes.setPrefWidth(sexto);
+		double sex = 960.0 / 6.0;
+		colCodProd.setPrefWidth(sex);
+		colNomeProd.setPrefWidth(sex);
+		colDescProd.setPrefWidth(sex);
+		colPrecoUnit.setPrefWidth(sex);
+		colQntProd.setPrefWidth(sex);
+		colAcoes.setPrefWidth(sex/2); 
+		colAcoes2.setPrefWidth(sex/2);
 		
+		// ---------------------------------------------------------------------------------
 		
-		table.getColumns().addAll(colCodProd, colNomeProd, colDescProd, colPrecoUnit, colQntProd, colAcoes);
+		table.getColumns().addAll(colCodProd, colNomeProd, colDescProd, colPrecoUnit, colQntProd, colAcoes, colAcoes2);
 		table.setItems(ctrlProd.getListaProd());
 
 		table.getSelectionModel().getSelectedItems().addListener(new ListChangeListener<Produto>() {
@@ -121,6 +164,7 @@ public class BoundaryProduto implements IPrincipal {
 		});
 	}
 	
+//===================================================================================================================================
 	@Override
 	public void start() {
 		try {
@@ -199,6 +243,16 @@ public class BoundaryProduto implements IPrincipal {
 
 		Button btnLimpar = new Button("Limpar");
 		btnLimpar.setOnAction(e -> ctrlProd.limpar());
+		
+		Button btnAlterar = new Button("Alterar");
+		btnAlterar.setOnAction(e -> {
+			try {
+				ctrlProd.alterar();
+			} catch (SQLException e1) {
+				Alert a = new Alert(AlertType.ERROR, "Erro ao gravar, contate o Administrador", ButtonType.OK);
+				a.showAndWait();
+			}
+		});
 
 		Button btnInserir = new Button("Inserir");
 		btnInserir.setOnAction(e -> {
@@ -221,13 +275,17 @@ public class BoundaryProduto implements IPrincipal {
 		});
 
 		AnchorPane.setTopAnchor(btnPesquisar, 120.0);
-		AnchorPane.setRightAnchor(btnPesquisar, 260.0);
+		AnchorPane.setRightAnchor(btnPesquisar, 380.0);
 		btnPesquisar.setPrefWidth(100.0);
 
 		AnchorPane.setTopAnchor(btnInserir, 120.0);
-		AnchorPane.setRightAnchor(btnInserir, 140.0);
+		AnchorPane.setRightAnchor(btnInserir, 260.0);
 		btnInserir.setPrefWidth(100.0);
 
+		AnchorPane.setTopAnchor(btnAlterar, 120.0);
+		AnchorPane.setRightAnchor(btnAlterar, 140.0);
+		btnAlterar.setPrefWidth(100.0);
+		
 		AnchorPane.setTopAnchor(btnLimpar, 120.0);
 		AnchorPane.setRightAnchor(btnLimpar, 20.0);
 		btnLimpar.setPrefWidth(100.0);
@@ -238,11 +296,12 @@ public class BoundaryProduto implements IPrincipal {
 		AnchorPane.setLeftAnchor(table, 20.0);
 		AnchorPane.setRightAnchor(table, 20.0);
 		AnchorPane.setBottomAnchor(table, 20.0);
+		
 		// ---------------------------------------------------------------------------------
 
 		principal.getChildren().addAll(lblProduto, lblCodProd, lblPreco, lblNome, lblQntProd, lblDesc,
 										txtCodProd, txtNomeProd, txtPrecoUnid, txtQntProd, txtDescProd, 
-										btnLimpar, btnInserir, btnPesquisar, table);
+										btnLimpar, btnInserir, btnPesquisar, btnAlterar, table);
 	}
 	
 	@Override

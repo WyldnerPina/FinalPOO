@@ -2,9 +2,7 @@ package wyldner.Produto;
 
 import java.sql.SQLException;
 import java.util.List;
-
 import javax.swing.JOptionPane;
-
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
@@ -26,6 +24,7 @@ public class CtrlProduto {
 	
 	private ObservableList<Produto> listaProd = FXCollections.observableArrayList();
 	private IProdDAO pDao;
+	
 //===================================================================================================================================
 	public CtrlProduto() throws ClassNotFoundException, SQLException {
 		pDao = new ProdDAO();
@@ -40,25 +39,8 @@ public class CtrlProduto {
 		desc.set("");
 		precoUnit.set(0);
 		qntProd.set(0);
-	}
-	
-	//---------------------------------------------------------------------------------
-
-	public void vender(Produto p) throws SQLException, ClassNotFoundException { 
-		CtrlVendas cv = new CtrlVendas();
-		int qnt = Integer.parseInt(JOptionPane.showInputDialog("qntos deseja vender?"));
-		cv.adicionar(p, qnt);
 		
-		if(p.getQntProd() - qnt > 0) {
-			System.out.println(p.getCodProduto());
-			p.setQntProd(p.getQntProd() - qnt);
-			pDao.atualizar(p.getCodProduto(), p);
-			limpar();
-			pesquisar();
-		}else {
-			listaProd.remove(p);
-			pDao.remover(p.getCodProduto());
-		}
+		listaProd.clear();
 	}
 	
 	public void fromEntity(Produto p) { 
@@ -69,17 +51,42 @@ public class CtrlProduto {
 		qntProd.set(p.getQntProd());
 	}
 	
+	//---------------------------------------------------------------------------------
+
+	public void vender(Produto p) throws SQLException, ClassNotFoundException { 
+		CtrlVendas cv = new CtrlVendas();
+		int qnt = Integer.parseInt(JOptionPane.showInputDialog("qntos deseja vender?"));
+		
+		if(p.getQntProd() - qnt > 0) {
+			p.setQntProd(p.getQntProd() - qnt);
+			cv.adicionar(p, qnt);
+			pDao.atualizar(p.getCodProduto(), p);
+			limpar();
+			pesquisar();
+		}else {
+			cv.adicionar(p, qnt);
+			listaProd.remove(p);
+			pDao.remover(p.getCodProduto());
+		}
+	}
+	
+	//---------------------------------------------------------------------------------
+	
+	public void excluir(Produto p) throws SQLException, ClassNotFoundException { 
+			pDao.remover(p.getCodProduto());limpar();
+			listaProd.remove(p);
+			pesquisar();
+	}
+	
+	//---------------------------------------------------------------------------------
+	
 	public void adicionar() throws SQLException { 
-		if (codProd.get() == 0) {
-			Produto p = new Produto();
-			p.setCodProduto(codProd.get());
-			p.setNome(nome.get());
-			p.setDescricao(desc.get());
-			p.setPrecoUnit(precoUnit.get());
-			p.setQntProd(qntProd.get());
-			
-			p = pDao.adicionar(p);
-			listaProd.add(p);
+		if (codProd.get() <= 0 || nome.get().equals("") || precoUnit.get() == 0 || qntProd.get() <= 0) {
+			JOptionPane.showMessageDialog(null, "Por favor, descreva ao menos:\n"
+											+ " - Código do produto\n"
+											+ " - Nome do produto\n"
+											+ " - Preço\n"
+											+ " - Quantidade");
 			
 		} else { 
 			Produto p = new Produto();
@@ -89,8 +96,6 @@ public class CtrlProduto {
 			p.setPrecoUnit(precoUnit.get());
 			p.setQntProd(qntProd.get());
 			
-			System.out.println(p);
-			
 			for (int i = 0; i < listaProd.size(); i++) { 
 				Produto prod = listaProd.get(i);
 				if (prod.getCodProduto() == codProd.get()) { 
@@ -98,10 +103,12 @@ public class CtrlProduto {
 				}
 			}
 			pDao.adicionar(p);
+			limpar();
+			pesquisar();
 		}
-		limpar();
-		pesquisar();
 	}
+	
+	//---------------------------------------------------------------------------------
 	
 	public void pesquisar() throws SQLException { 
 		listaProd.clear();
@@ -109,7 +116,24 @@ public class CtrlProduto {
 		listaProd.addAll(lst);		
 	}
 	
-	/* FALTA FAZER O PESQUISAR POR COD */
+	//---------------------------------------------------------------------------------
+	
+	public void alterar() throws SQLException { 
+		if(codProd.get() == 0) {
+			JOptionPane.showMessageDialog(null, "Selecione um produto para atualizar");
+		}else {
+			Produto p = new Produto();
+			p.setCodProduto(codProd.get());
+			p.setNome(nome.get());
+			p.setDescricao(desc.get());
+			p.setPrecoUnit(precoUnit.get());
+			p.setQntProd(qntProd.get());
+			
+			pDao.atualizar(codProd.get(), p);
+			limpar();
+			pesquisar();
+		}	
+	}
 	
 //===================================================================================================================================
 	public final ObservableList<Produto> getListaProd() {

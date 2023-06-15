@@ -12,12 +12,14 @@ import wyldner.Principal.AcessoBD;
 public class VendasDAO implements IVendasDAO{
 	private Connection con;
 	
-	//===========================================================================================	
+//===================================================================================================================================	
 	public VendasDAO() throws ClassNotFoundException, SQLException {
 		Class.forName(AcessoBD.getJdbcDriver());
 		con = DriverManager.getConnection(AcessoBD.getJdbcUrl(), AcessoBD.getJdbcUser(), AcessoBD.getJdbcPass());
 	}
 
+	//---------------------------------------------------------------------------------
+	
 	@Override
 	public Vendas adicionar(Vendas v) throws SQLException {
 		String sql = "INSERT INTO vendas (qntidade, dtVenda, codProduto, total, nome, descricao, precoUnit, qntProd)"
@@ -44,6 +46,8 @@ public class VendasDAO implements IVendasDAO{
 		return v;
 	}
 
+	//---------------------------------------------------------------------------------
+	
 	@Override
 	public void atualizar(long id, Vendas v) throws SQLException {
 		String sql = "UPDATE vendas SET qntidade = ?, dtVenda = ?, codProduto = ?, total = ?, nome = ?,"
@@ -63,6 +67,8 @@ public class VendasDAO implements IVendasDAO{
 		st.executeUpdate();
 	}
 
+	//---------------------------------------------------------------------------------
+	
 	@Override
 	public void remover(long id) throws SQLException {
 		String sql = "DELETE FROM vendas WHERE idVendas = ?";
@@ -71,27 +77,8 @@ public class VendasDAO implements IVendasDAO{
 		st.executeUpdate();
 	}
 
-//	@Override
-//	public List<Vendas> procurarNome(String nome) throws SQLException {
-//		List<Vendas> lista = new ArrayList<>();
-//
-//		String sql = "SELECT * FROM vendas WHERE nome LIKE ?";
-//		PreparedStatement st = con.prepareStatement(sql);
-//		st.setString(1, "%" + nome + "%");
-//		ResultSet rs = st.executeQuery();
-//
-//		while (rs.next()) {
-//			Vendas v = new Vendas();
-//			v.setIdVendas(rs.getLong("idVendas"));
-//			v.setQntidade(rs.getInt("qntidade"));
-//			v.setSqlDate(rs.getDate("dtVendas"));
-//			v.setTotal(rs.getDouble("total"));
-//
-//			lista.add(v);
-//		}
-//		return lista;
-//	}
-
+	//---------------------------------------------------------------------------------
+	
 	@Override
 	public Vendas procurarCodProd(long id) throws SQLException {
 		String sql = "SELECT * FROM vendas WHERE idVendas = ? ";
@@ -117,7 +104,8 @@ public class VendasDAO implements IVendasDAO{
 		return null;
 	}
 
-	
+	//---------------------------------------------------------------------------------
+		
 	@Override
 	public List<Vendas> procurarTodos() throws SQLException {
 		List<Vendas> lista = new ArrayList<>();

@@ -40,7 +40,8 @@ public class BoundaryVendas implements IPrincipal {
 	private TableView<Vendas> table = new TableView<>();
 	
 	private AnchorPane principal;
-	
+
+//===================================================================================================================================
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void ligacoes() { 
 		Bindings.bindBidirectional(txtidVend.textProperty(), ctrlVend.getIdVend(),(StringConverter) new LongStringConverter());
@@ -55,6 +56,8 @@ public class BoundaryVendas implements IPrincipal {
 		Bindings.bindBidirectional(txtPrecoUnid.textProperty(), ctrlVend.getPreco(),(StringConverter) new DoubleStringConverter());
 		Bindings.bindBidirectional(txtQntProd.textProperty(), ctrlVend.getQntProd(),(StringConverter) new IntegerStringConverter());
 	}
+	
+	// ---------------------------------------------------------------------------------
 	
 	@SuppressWarnings("unchecked")
 	public void abastecerTableView() { 
@@ -139,6 +142,8 @@ public class BoundaryVendas implements IPrincipal {
 		
 		colAcoes.setPrefWidth(dec);
 		
+		// ---------------------------------------------------------------------------------
+		
 		table.getColumns().addAll(colIdVend, colQnt, colData, colTotal, colCodP, colNome, colDesc, colPrecoUnit, colQntRes, colAcoes);
 		table.setItems(ctrlVend.getListaProd());
 
@@ -152,6 +157,8 @@ public class BoundaryVendas implements IPrincipal {
 		});
 	}
 	
+	//===================================================================================================================================
+	
 	@Override
 	public void start() {
 		try {
@@ -163,6 +170,7 @@ public class BoundaryVendas implements IPrincipal {
 		principal = new AnchorPane();
 		
 		// ---------------------------------------------------------------------------------
+		
 		ligacoes();
 		abastecerTableView();
 
@@ -247,7 +255,6 @@ public class BoundaryVendas implements IPrincipal {
 		AnchorPane.setLeftAnchor(txtQntProd, 840.0);
 		txtQntProd.setPrefWidth(60.0);
 		
-		
 		// ---------------------------------------------------------------------------------
 
 		Button btnLimpar = new Button("Limpar");
@@ -290,15 +297,12 @@ public class BoundaryVendas implements IPrincipal {
 		AnchorPane.setLeftAnchor(table, 20.0);
 		AnchorPane.setRightAnchor(table, 20.0);
 		AnchorPane.setBottomAnchor(table, 20.0);
+		
 		// ---------------------------------------------------------------------------------
 		
 		principal.getChildren().addAll(lblProduto, lblIdVend, txtidVend, lblQntVend, txtQnt, lblDtVend, txtDt, lblCodProd, txtCodProd, lblProd,
 				txtNomeProd, lblDesc, txtDescProd, lblPreco, txtPrecoUnid, lblQntProd, txtQntProd,
 				btnLimpar, btnAtualizar, btnPesquisar, table);
-		
-//		principal.getChildren().addAll(lblProduto, lblCodProd, lblPreco, lblNome, lblQntProd, lblDesc,
-//				txtidVend, txtQnt, 
-				
 	}
 	
 	@Override

@@ -12,13 +12,14 @@ import wyldner.Principal.AcessoBD;
 public class ProdDAO implements IProdDAO{
 	private Connection con;
 	
-//===========================================================================================	
+//===================================================================================================================================	
 	public ProdDAO() throws ClassNotFoundException, SQLException {
 		Class.forName(AcessoBD.getJdbcDriver());
 		con = DriverManager.getConnection(AcessoBD.getJdbcUrl(), AcessoBD.getJdbcUser(), AcessoBD.getJdbcPass());
 	}
 
-
+	//---------------------------------------------------------------------------------
+	
 	@Override
 	public Produto adicionar(Produto p) throws SQLException {
 		String sql = "INSERT INTO produto (codProduto, nome, descricao, precoUnit, qntProd) VALUES (?, ?, ?, ?, ?)";
@@ -39,6 +40,8 @@ public class ProdDAO implements IProdDAO{
 		}
 		return p;
 	}
+	
+	//---------------------------------------------------------------------------------
 
 	@Override
 	public void atualizar(long id, Produto p) throws SQLException {
@@ -54,6 +57,8 @@ public class ProdDAO implements IProdDAO{
 		st.executeUpdate();		
 	}
 
+	//---------------------------------------------------------------------------------
+	
 	@Override
 	public void remover(long id) throws SQLException {
 		String sql = "DELETE FROM produto WHERE codProduto = ?";
@@ -61,6 +66,8 @@ public class ProdDAO implements IProdDAO{
 		st.setLong(1, id);
 		st.executeUpdate();
 	}
+	
+	//---------------------------------------------------------------------------------
 
 	@Override
 	public List<Produto> procurarNome(String nome) throws SQLException {
@@ -84,6 +91,8 @@ public class ProdDAO implements IProdDAO{
 		}
 		return lista;
 	}
+	
+	//---------------------------------------------------------------------------------
 
 	@Override
 	public Produto procurarCodProd(long id) throws SQLException {
